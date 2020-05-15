@@ -1,7 +1,11 @@
 <html>
+    <style>
+     body {
+         background-color: #111;
+     }
+    </style>
     <head>
         <title>visbeat</title>
-        <link href="main.css" rel="stylesheet"/>
         <meta charset="utf-8"/>
     </head>
 
@@ -10,16 +14,10 @@
             <h3>Your browser does not support the canvas element!</h3>
         </canvas>
         <br/>
-        
-        <textarea id="redfin">t</textarea>
-        <textarea id="greenfin">t</textarea>
-        <textarea id="bluefin">t</textarea>
-
-        <br/>
-        <button id="updatebtn">update</button>
 
         <span>FPS: <div id="fps"></div></span>
 
+        <script src="bytebeat.js"></script>
         <script src="main.js"></script>
     </body>
 </html>

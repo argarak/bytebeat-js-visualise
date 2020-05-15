@@ -1,15 +1,3 @@
-let tf = function(t) {
-  return 0;
-};
-
-let tf2 = function(t) {
-  return (t & (t / 200)) ^ (((t | 800) / 2) % 128);
-};
-
-let tf3 = function(t) {
-  return 0;
-};
-
 let mt = 0;
 let fr1 = 0;
 let fr2 = 0;
@@ -17,18 +5,6 @@ let fr2 = 0;
 document.addEventListener(
   "DOMContentLoaded",
   function() {
-    document.getElementById("updatebtn").addEventListener("click", function(e) {
-      let redf = document.getElementById("redfin").value;
-      let greenf = document.getElementById("greenfin").value;
-      let bluef = document.getElementById("bluefin").value;
-
-      console.log(redf, greenf, bluef);
-
-      tf = Function("t", "return " + redf + ";");
-      tf2 = Function("t", "return " + greenf + ";");
-      tf3 = Function("t", "return " + bluef + ";");
-    });
-
     var fpsbox = document.getElementById("fps");
 
     let drawfps = function() {
@@ -46,17 +22,10 @@ document.addEventListener(
       var imgdatalen = imgdata.data.length;
 
       for (var i = 0; i < imgdatalen / 4; i++) {
-        imgdata.data[4 * (mt % (imgdatalen / 4))] = Math.round(tf(mt) % 256);
-        imgdata.data[4 * (mt % (imgdatalen / 4)) + 1] = Math.round(
-          tf2(mt) % 256
-        );
-        imgdata.data[4 * (mt % (imgdatalen / 4)) + 2] = Math.round(
-          tf3(mt) % 256
-        );
-
-        //imgdata.data[4 * (mt % (imgdatalen / 4)) + 2] = 255;
-
-        imgdata.data[4 * (mt % (imgdatalen / 4)) + 3] = 255;
+        imgdata.data[4 * (mt % (imgdatalen / 4))] = (red(mt) % 256) | 0;
+        imgdata.data[4 * (mt % (imgdatalen / 4)) + 1] = (green(mt) % 256) | 0;
+        imgdata.data[4 * (mt % (imgdatalen / 4)) + 2] = (blue(mt) % 256) | 0;
+        imgdata.data[4 * (mt % (imgdatalen / 4)) + 3] = (alpha(mt) % 256) | 0;
 
         mt += 1;
       }
