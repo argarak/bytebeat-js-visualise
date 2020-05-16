@@ -1,47 +1,44 @@
-let mt = 0;
-let fr1 = 0;
-let fr2 = 0;
+const EDITOR_THEME_COOKIE = "bytebeatEditorTheme";
 
-document.addEventListener(
-  "DOMContentLoaded",
-  function() {
-    var fpsbox = document.getElementById("fps");
+var cmEditor;
 
-    let drawfps = function() {
-      fr1 = performance.now();
-      draw();
-      fr2 = performance.now();
-      fpsbox.innerHTML = "" + 1000 / (fr2 - fr1);
-    };
+const getCookie = name => {
+  return document.cookie.split("; ").reduce((r, v) => {
+    const parts = v.split("=");
+    return parts[0] === name ? decodeURIComponent(parts[1]) : r;
+  }, "");
+};
 
-    var draw = function() {
-      let ctx = window.ctx;
+document.getElementById("themeSelect").addEventListener("change", e => {
+  let theme = e.target.value;
+  document.cookie = EDITOR_THEME_COOKIE + "=" + theme;
 
-      //var imgdata = ctx.getImageData(0, 0, 640, 480);
-      var imgdata = ctx.createImageData(640, 480);
-      var imgdatalen = imgdata.data.length;
+  if (!cmEditor) {
+    console.error("codemirror not initialised");
+    return;
+  }
 
-      for (var i = 0; i < imgdatalen / 4; i++) {
-        imgdata.data[4 * (mt % (imgdatalen / 4))] = (red(mt) % 256) | 0;
-        imgdata.data[4 * (mt % (imgdatalen / 4)) + 1] = (green(mt) % 256) | 0;
-        imgdata.data[4 * (mt % (imgdatalen / 4)) + 2] = (blue(mt) % 256) | 0;
-        imgdata.data[4 * (mt % (imgdatalen / 4)) + 3] = (alpha(mt) % 256) | 0;
+  cmEditor.setOption("theme", theme);
+});
 
-        mt += 1;
-      }
+document.addEventListener("DOMContentLoaded", () => {
+  // a good theme to start with
+  let theme = "material-darker";
 
-      ctx.putImageData(imgdata, 0, 0);
+  // get saved theme if used previously
+  let cookieTheme = getCookie(EDITOR_THEME_COOKIE);
 
-      window.requestAnimationFrame(drawfps);
-    };
+  if (cookieTheme) {
+    theme = cookieTheme;
+    document.getElementById("themeSelect").value = theme;
+  }
 
-    let canvas = document.getElementById("vis");
-
-    if (canvas.getContext) {
-      window.ctx = canvas.getContext("2d");
-    }
-
-    window.requestAnimationFrame(drawfps);
-  },
-  false
-);
+  cmEditor = CodeMirror(document.getElementById("editorContainer"), {
+    value: "function myScript(){return 100;}\n",
+    mode: "javascript",
+    theme: theme,
+    lineNumbers: true,
+    indentUnit: 4,
+    lineWrapping: true
+  });
+});
